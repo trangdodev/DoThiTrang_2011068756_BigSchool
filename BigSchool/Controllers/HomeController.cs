@@ -1,4 +1,5 @@
 ﻿using BigSchool.Models;
+using BigSchool.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -19,10 +20,16 @@ namespace BigSchool.Controllers
         public ActionResult Index()
         {
             var upcommingCourse = _dbContext.Courses
-            .Include(c=>c.Lecturer)
+            .Include(c => c.Lecturer)
             .Include(c => c.Category)
             .Where(c => c.DateTime > DateTime.Now);
-            return View(upcommingCourse);
+
+            var viewModel = new CoursesViewModel
+            {
+                UpcomingCourses = upcommingCourse.ToList(),
+                ShowAction = User.Identity.IsAuthenticated
+            };
+            return View(viewModel);
         }
 
         public ActionResult About()
